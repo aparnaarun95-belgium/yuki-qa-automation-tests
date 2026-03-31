@@ -1,0 +1,95 @@
+trigger:
+  - main
+  - develop
+
+pr:
+  - main
+  - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  dotnetVersion: '3.1.x'
+
+stages:
+  - stage: Build
+    displayName: 'Build & Test'
+    jobs:
+      - job: BuildAndTest
+        displayName: 'Build and Run Tests'
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Use .NET Core SDK $(dotnetVersion)'
+            inputs:
+              version: '$(dotnetVersion)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore dependencies'
+            inputs:
+              command: 'restore'
+              projects: '**/*.csproj'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build solution'
+            inputs:
+              command: 'build'
+              arguments: '--configuration $(buildConfiguration)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Install Playwright browsers'
+            inputs:
+              command: 'run'
+              arguments: '--project "yuki-qa-automation-tests/yuki-qa-automation-tests.csproj" -- pwsh bin/$(buildConfiguration)/netcoreapp3.1/playwright.ps1 install'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Run tests'
+            inputs:
+              command: 'test'
+              arguments: '--configuration $(buildConfiguration) --logger trx --results-directory $(Agent.TempDirectory)/TestResults --collect:"XPlat Code Coverage"'
+            env:
+              ASPNETCORE_ENVIRONMENT: Production
+
+          - task: PublishTestResults@2
+            displayName: 'Publish test results'
+            condition: always()
+            inputs:
+              testResultsFormat: 'VSTest'
+              testResultsFiles: '$(Agent.TempDirectory)/TestResults/**/*.trx'
+              testRunTitle: 'Playwright Tests'
+              searchFolder: '$(Agent.TempDirectory)/TestResults'
+
+          - task: PublishCodeCoverageResults@1
+            displayName: 'Publish code coverage'
+            condition: always()
+            inputs:
+              codeCoverageTool: 'Cobertura'
+              summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish screenshots & logs'
+            condition: failed()
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/screenshots'
+              artifactName: 'Screenshots'
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish logs'
+            condition: always()
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/logs'
+              artifactName: 'Logs'
+
+  - stage: ReportResults
+    displayName: 'Report Results'
+    dependsOn: Build
+    condition: always()
+    jobs:
+      - job: GenerateReport
+        displayName: 'Generate Test Report'
+        steps:
+          - script: |
+              echo "Test execution completed"
+              echo "Check artifacts for screenshots and logs"
+            displayName: 'Print summary'
