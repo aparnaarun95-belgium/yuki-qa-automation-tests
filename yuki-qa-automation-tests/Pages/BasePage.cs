@@ -21,6 +21,23 @@ namespace yuki_qa_automation_tests.Pages
 
         public async Task<string> GetPageContentAsync() => await Page.ContentAsync();
 
+        /// <summary>
+        /// Navigates to the specified URL and waits for the page to load.
+        /// This method is shared across all page objects to ensure consistent navigation behavior.
+        /// </summary>
+        public virtual async Task NavigateToAsync(string baseUrl)
+        {
+            try
+            {
+                await Page.GotoAsync(baseUrl, new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Navigation failed - URL: {baseUrl}, Error: {ex.Message}");
+                throw;
+            }
+        }
+
         protected async Task<ILocator> FindElementAsync(string selector)
         {
             var locator = Page.Locator(selector);
@@ -85,8 +102,10 @@ namespace yuki_qa_automation_tests.Pages
                 await FindElementVisibleAsync(selector);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                // Log which selector failed for debugging
+                System.Diagnostics.Debug.WriteLine($"Element not visible - Selector: {selector}, Error: {ex.Message}");
                 return false;
             }
         }
@@ -98,8 +117,10 @@ namespace yuki_qa_automation_tests.Pages
                 await FindElementAsync(selector);
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                // Log which selector failed for debugging
+                System.Diagnostics.Debug.WriteLine($"Element not present - Selector: {selector}, Error: {ex.Message}");
                 return false;
             }
         }

@@ -16,7 +16,7 @@ namespace yuki_qa_automation_tests.Configuration
             _configuration = builder.Build();
         }
 
-        public string BaseUrl => _configuration["PlaywrightSettings:BaseUrl"] ?? "https://example.com";
+        public string BaseUrl => _configuration["PlaywrightSettings:BaseUrl"] ?? "http://localhost:5000";
         public string BrowserType => _configuration["PlaywrightSettings:BrowserType"] ?? "chromium";
         public bool Headless => bool.Parse(_configuration["PlaywrightSettings:Headless"] ?? "true");
         public int SlowMo => int.Parse(_configuration["PlaywrightSettings:SlowMo"] ?? "0");

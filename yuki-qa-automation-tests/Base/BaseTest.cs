@@ -12,7 +12,7 @@ namespace yuki_qa_automation_tests.Base
         protected IBrowser Browser { get; private set; }
         protected IBrowserContext Context { get; private set; }
 
-        protected string BaseUrl { get; set; } = "https://example.com";
+        protected string BaseUrl { get; set; } = "http://localhost:5000";
         protected int DefaultTimeout { get; set; } = 30000;
         protected bool Headless { get; set; } = true;
 

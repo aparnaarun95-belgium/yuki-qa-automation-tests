@@ -16,7 +16,7 @@ namespace yuki_qa_automation_tests.Tests
         public async Task TestSetup()
         {
             _homePage = new HomePage(Page, DefaultTimeout);
-            BaseUrl = "http://localhost:5000"; // Replace with actual base URL
+            BaseUrl = "http://localhost:5000";
         }
 
         [Test]
@@ -32,7 +32,7 @@ namespace yuki_qa_automation_tests.Tests
 
             // Assert
             Assert.That(isLoaded, Is.True, "Home page should load successfully");
-            Assert.That(_homePage.GetCurrentUrl(), Contains.Substring("example.com"), "URL should contain base domain");
+            Assert.That(_homePage.GetCurrentUrl(), Contains.Substring("localhost:5000"), "URL should contain localhost:5000");
 
             TestContext.WriteLine("✓ Home page loaded successfully");
         }
@@ -56,40 +56,8 @@ namespace yuki_qa_automation_tests.Tests
         }
 
         [Test]
-        [Description("Verify sign in button is available on home page")]
-        public async Task TC003_VerifySignInButtonVisible()
-        {
-            // Arrange
-            await _homePage.NavigateToAsync(BaseUrl);
-
-            // Act
-            var isSignInVisible = await _homePage.IsSignInButtonVisibleAsync();
-
-            // Assert
-            Assert.That(isSignInVisible, Is.True, "Sign in button should be visible");
-
-            TestContext.WriteLine("✓ Sign in button is visible and clickable");
-        }
-
-        [Test]
-        [Description("Verify sign up button is available on home page")]
-        public async Task TC004_VerifySignUpButtonVisible()
-        {
-            // Arrange
-            await _homePage.NavigateToAsync(BaseUrl);
-
-            // Act
-            var isSignUpVisible = await _homePage.IsSignUpButtonVisibleAsync();
-
-            // Assert
-            Assert.That(isSignUpVisible, Is.True, "Sign up button should be visible");
-
-            TestContext.WriteLine("✓ Sign up button is visible and clickable");
-        }
-
-        [Test]
         [Description("Verify navigation menu is present on home page")]
-        public async Task TC005_VerifyNavigationMenuPresent()
+        public async Task TC003_VerifyNavigationMenuPresent()
         {
             // Arrange
             await _homePage.NavigateToAsync(BaseUrl);
@@ -104,81 +72,43 @@ namespace yuki_qa_automation_tests.Tests
         }
 
         [Test]
-        [Description("Verify search functionality is present on home page")]
-        public async Task TC006_VerifySearchFunctionalityPresent()
+        [Description("Verify navigation to Invoices page")]
+        public async Task TC004_VerifyNavigateToInvoicesPage()
         {
             // Arrange
             await _homePage.NavigateToAsync(BaseUrl);
 
             // Act
-            var isSearchPresent = await _homePage.IsSearchBoxPresentAsync();
-
-            // Assert
-            Assert.That(isSearchPresent, Is.True, "Search box should be present");
-
-            TestContext.WriteLine("✓ Search functionality is present");
-        }
-
-        [Test]
-        [Description("Verify featured section is visible on home page")]
-        public async Task TC007_VerifyFeaturedSectionVisible()
-        {
-            // Arrange
-            await _homePage.NavigateToAsync(BaseUrl);
-
-            // Act
-            var isFeaturedVisible = await _homePage.IsFeaturedSectionVisibleAsync();
-
-            // Assert
-            // Note: This assertion may be skipped if the site doesn't have a featured section
-            if (isFeaturedVisible)
-            {
-                TestContext.WriteLine("✓ Featured section is visible");
-            }
-            else
-            {
-                TestContext.WriteLine("⚠ Featured section not found (may not be present on site)");
-            }
-        }
-
-        [Test]
-        [Description("Verify page title is correct")]
-        public async Task TC008_VerifyPageTitle()
-        {
-            // Arrange
-            await _homePage.NavigateToAsync(BaseUrl);
-
-            // Act
-            var pageTitle = await _homePage.GetPageHeadingAsync();
-
-            // Assert
-            Assert.That(pageTitle, Is.Not.Null.And.Not.Empty, "Page title should not be empty");
-
-            TestContext.WriteLine($"✓ Page title: {pageTitle}");
-        }
-
-        [Test]
-        [Description("Verify page responsiveness by checking viewport")]
-        public async Task TC009_VerifyPageResponsiveness()
-        {
-            // Arrange
-            await _homePage.NavigateToAsync(BaseUrl);
-
-            // Act
+            await _homePage.ClickInvoicesLinkAsync();
             var currentUrl = _homePage.GetCurrentUrl();
-            var isLoaded = await _homePage.IsHomePageLoadedAsync();
 
             // Assert
-            Assert.That(isLoaded, Is.True, "Page should be responsive and load correctly");
-            Assert.That(currentUrl, Is.Not.Null, "Current URL should not be null");
+            Assert.That(currentUrl, Contains.Substring("Invoices"), "Should navigate to Invoices page");
 
-            TestContext.WriteLine($"✓ Page is responsive - Current URL: {currentUrl}");
+            TestContext.WriteLine("✓ Successfully navigated to Invoices page");
         }
 
         [Test]
-        [Description("Verify home page loads within acceptable time")]
+        [Description("Verify navigation to Privacy page")]
+        public async Task TC005_VerifyNavigateToPrivacyPage()
+        {
+            // Arrange
+            await _homePage.NavigateToAsync(BaseUrl);
+
+            // Act
+            await _homePage.ClickPrivacyLinkAsync();
+            var currentUrl = _homePage.GetCurrentUrl();
+
+            // Assert
+            Assert.That(currentUrl, Contains.Substring("Privacy"), "Should navigate to Privacy page");
+
+            TestContext.WriteLine("✓ Successfully navigated to Privacy page");
+        }
+
+        [Test]
+        [Description("Verify page load time is acceptable")]
         [Timeout(15000)] // 15 second timeout for this test
-        public async Task TC010_VerifyPageLoadTime()
+        public async Task TC006_VerifyPageLoadTime()
         {
             // Arrange
             var startTime = System.DateTime.Now;

@@ -215,7 +215,7 @@ public class HomePageTests : BaseTest
     public async Task Setup()
     {
         _homePage = new HomePage(Page);
-        BaseUrl = "https://example.com";
+        BaseUrl = "http://localhost:5000";
     }
 
     [Test]

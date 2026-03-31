@@ -1,31 +1,26 @@
-using Microsoft.Playwright;
+using System;
 using System.Threading.Tasks;
+using Microsoft.Playwright;
 
 namespace yuki_qa_automation_tests.Pages
 {
     public class HomePage : BasePage
     {
-        // Selectors for common elements
-        private const string WelcomeHeading = "h1, [data-testid='welcome-heading']";
-        private const string SignInButton = "button:has-text('Sign In'), [data-testid='sign-in-button']";
-        private const string SignUpButton = "button:has-text('Sign Up'), [data-testid='sign-up-button']";
-        private const string NavMenu = "nav, [data-testid='navigation']";
-        private const string SearchBox = "input[placeholder*='search'], [data-testid='search-input']";
-        private const string FeaturedSection = "section[data-testid='featured'], .featured-section";
+        // Selectors for existing elements only
+        private const string WelcomeHeading = "h1.display-4";
+        private const string NavMenu = "nav";
+        private const string InvoicesLink = "#nav-item-link-invoices";
+        private const string PrivacyLink = "#nav-item-link-privacy";
+        private const string HomeLink = "#nav-item-link-home";
 
         public HomePage(IPage page, int defaultTimeout = 10000)
             : base(page, defaultTimeout)
         {
         }
 
-        public async Task NavigateToAsync(string baseUrl)
-        {
-            await Page.GotoAsync(baseUrl, new PageGotoOptions { WaitUntil = WaitUntilState.NetworkIdle });
-        }
-
         public async Task<bool> IsHomePageLoadedAsync()
         {
-            // Check if key elements are visible
+            // Check if welcome heading is visible
             return await IsElementVisibleAsync(WelcomeHeading);
         }
 
@@ -34,50 +29,24 @@ namespace yuki_qa_automation_tests.Pages
             return await GetTextAsync(WelcomeHeading);
         }
 
-        public async Task<bool> IsSignInButtonVisibleAsync()
-        {
-            return await IsElementVisibleAsync(SignInButton);
-        }
-
-        public async Task<bool> IsSignUpButtonVisibleAsync()
-        {
-            return await IsElementVisibleAsync(SignUpButton);
-        }
-
-        public async Task ClickSignInAsync()
-        {
-            await ClickAsync(SignInButton);
-        }
-
-        public async Task ClickSignUpAsync()
-        {
-            await ClickAsync(SignUpButton);
-        }
-
         public async Task<bool> IsNavigationMenuVisibleAsync()
         {
             return await IsElementVisibleAsync(NavMenu);
         }
 
-        public async Task<bool> IsSearchBoxPresentAsync()
+        public async Task ClickInvoicesLinkAsync()
         {
-            return await IsElementPresentAsync(SearchBox);
+            await ClickAsync(InvoicesLink);
         }
 
-        public async Task SearchAsync(string query)
+        public async Task ClickPrivacyLinkAsync()
         {
-            await FillAsync(SearchBox, query);
-            await Page.Keyboard.PressAsync("Enter");
+            await ClickAsync(PrivacyLink);
         }
 
-        public async Task<bool> IsFeaturedSectionVisibleAsync()
+        public async Task ClickHomeAsync()
         {
-            return await IsElementVisibleAsync(FeaturedSection);
-        }
-
-        public async Task<string> GetPageHeadingAsync()
-        {
-            return await GetPageTitleAsync();
+            await ClickAsync(HomeLink);
         }
 
         public async Task WaitForHomePageLoadAsync()
