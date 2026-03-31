@@ -4,24 +4,31 @@ using Microsoft.Playwright;
 
 namespace yuki_qa_automation_tests.Pages
 {
-    public class HomePage : BasePage
+    public class HomePage : NavigablePage
     {
-        // Selectors for existing elements only
+        // Selectors for home page specific elements only
         private const string WelcomeHeading = "h1.display-4";
-        private const string NavMenu = "nav";
-        private const string InvoicesLink = "#nav-item-link-invoices";
-        private const string PrivacyLink = "#nav-item-link-privacy";
-        private const string HomeLink = "#nav-item-link-home";
 
         public HomePage(IPage page, int defaultTimeout = 10000)
             : base(page, defaultTimeout)
         {
         }
 
+        /// <summary>
+        /// Checks if the home page is loaded by verifying the welcome heading is visible.
+        /// </summary>
         public async Task<bool> IsHomePageLoadedAsync()
         {
             // Check if welcome heading is visible
             return await IsElementVisibleAsync(WelcomeHeading);
+        }
+
+        /// <summary>
+        /// Implements the abstract method from NavigablePage.
+        /// </summary>
+        public override async Task<bool> IsPageLoadedAsync()
+        {
+            return await IsHomePageLoadedAsync();
         }
 
         public async Task<string> GetWelcomeHeadingAsync()
@@ -29,24 +36,31 @@ namespace yuki_qa_automation_tests.Pages
             return await GetTextAsync(WelcomeHeading);
         }
 
-        public async Task<bool> IsNavigationMenuVisibleAsync()
-        {
-            return await IsElementVisibleAsync(NavMenu);
-        }
-
+        /// <summary>
+        /// Legacy method name for backward compatibility.
+        /// Navigates to invoices page using the menu.
+        /// </summary>
         public async Task ClickInvoicesLinkAsync()
         {
-            await ClickAsync(InvoicesLink);
+            await NavigateToInvoicesAsync();
         }
 
+        /// <summary>
+        /// Legacy method name for backward compatibility.
+        /// Navigates to privacy page using the menu.
+        /// </summary>
         public async Task ClickPrivacyLinkAsync()
         {
-            await ClickAsync(PrivacyLink);
+            await NavigateToPrivacyAsync();
         }
 
+        /// <summary>
+        /// Legacy method name for backward compatibility.
+        /// Navigates to home page using the menu.
+        /// </summary>
         public async Task ClickHomeAsync()
         {
-            await ClickAsync(HomeLink);
+            await NavigateToHomeAsync();
         }
 
         public async Task WaitForHomePageLoadAsync()

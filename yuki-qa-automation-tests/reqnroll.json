@@ -1,0 +1,8 @@
+{
+  "language": "en",
+  "featureLanguage": "en",
+  "trace": "verbose",
+  "generateBindingCulture": false,
+  "plugins": [],
+  "stepAssemblies": []
+}

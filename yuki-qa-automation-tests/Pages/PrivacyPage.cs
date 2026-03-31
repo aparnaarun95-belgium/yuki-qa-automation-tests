@@ -4,37 +4,34 @@ using Microsoft.Playwright;
 
 namespace yuki_qa_automation_tests.Pages
 {
-    public class PrivacyPage : BasePage
+    /// <summary>
+    /// Privacy Page Object Model.
+    /// Inherits navigation functionality from NavigablePage to avoid code duplication.
+    /// </summary>
+    public class PrivacyPage : NavigablePage
     {
-        // Selectors for privacy page elements
+        // Selectors for privacy page specific elements
         private const string PageHeading = "h1";
-        private const string NavMenu = "nav";
-        private const string HomeLink = "#nav-item-link-home";
-        private const string InvoicesLink = "#nav-item-link-invoices";
 
         public PrivacyPage(IPage page, int defaultTimeout = 10000)
             : base(page, defaultTimeout)
         {
         }
 
+        /// <summary>
+        /// Checks if the privacy page is loaded.
+        /// </summary>
         public async Task<bool> IsPrivacyPageLoadedAsync()
         {
             return await IsElementVisibleAsync(PageHeading);
         }
 
-        public async Task<bool> IsNavigationMenuVisibleAsync()
+        /// <summary>
+        /// Implements the abstract method from NavigablePage.
+        /// </summary>
+        public override async Task<bool> IsPageLoadedAsync()
         {
-            return await IsElementVisibleAsync(NavMenu);
-        }
-
-        public async Task ClickHomeAsync()
-        {
-            await ClickAsync(HomeLink);
-        }
-
-        public async Task ClickInvoicesLinkAsync()
-        {
-            await ClickAsync(InvoicesLink);
+            return await IsPrivacyPageLoadedAsync();
         }
     }
 }

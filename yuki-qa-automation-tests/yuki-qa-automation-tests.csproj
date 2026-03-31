@@ -14,6 +14,8 @@
     <PackageReference Include="Microsoft.Playwright" Version="1.40.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Reqnroll" Version="1.0.2" />
+    <PackageReference Include="Reqnroll.NUnit" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
